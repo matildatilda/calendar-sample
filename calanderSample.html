@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>カレンダーをつくってみます。(on Cloud9)</title>
+<script>
+var year, month, day;
+
+function cal(year, month, day)
+{
+	var weekList = [ "日", "月", "火", "水", "木", "金", "土" ];
+
+	var firstDate = new Date(year, month, 1);
+	var endDate = new Date(year, (month + 1), 0);
+
+	document.getElementById( "calDate" ).innerHTML = year + "年" + (month + 1) + "月" + "（" + firstDate.getFullYear() + "/" + (firstDate.getMonth() + 1) + "/" + firstDate.getDate() + "-" + endDate.getFullYear() + "/" + (endDate.getMonth() + 1) + "/" + endDate.getDate() + "）";
+
+	clearCalender();
+
+	var tr = document.createElement( "tr" );
+	var th;
+
+	for( i = 0; i < 7; i++ )
+	{
+		th = document.createElement( "th" );
+		th.innerHTML = weekList[i];
+		tr.appendChild( th );
+	}
+	document.getElementById( "calender" ).appendChild( tr );
+	
+	tr = document.createElement( "tr" );
+	var td;
+
+	var i = 0;
+	var dateCount = 1;
+	for( i = 0; i < 7; i++ )
+	{
+		td = document.createElement( "td" );
+		if( i < firstDate.getDay() )
+		{
+			td.innerHTML = "-";
+		}
+		else
+		{
+			td.innerHTML = dateCount;
+			dateCount++;
+		}
+		tr.appendChild( td );
+	}
+	
+	var modNum = dateCount % 7;
+
+	for( ; dateCount <= endDate.getDate(); dateCount++ )
+	{
+		if( dateCount % 7 == modNum )
+		{
+			document.getElementById( "calender" ).appendChild( tr );
+			tr = document.createElement( "tr" );
+		}
+		
+		td = document.createElement( "td" );
+		td.innerHTML = dateCount;
+		tr.appendChild( td );
+	}
+
+	i = (dateCount - modNum) % 7;
+
+	for( ; 0 < i && i < 7; i++ )
+	{
+		td = document.createElement( "td" );
+		td.innerHTML = "-";
+		tr.appendChild( td );
+	}
+
+	document.getElementById( "calender" ).appendChild( tr );
+
+};
+function clearCalender()
+{
+	var cal = document.getElementById( "calender" );
+	
+	var rowCount = cal.childNodes.length;
+	var i = 0;
+
+	for( i = 1; i < rowCount; i++ )
+	{
+		cal.removeChild(cal.childNodes.item(1));
+	}
+};
+function onLastMonth()
+{
+	month--;
+	if( month < 0 )
+	{
+		month = 11;
+		year--;
+	}
+	cal(year, month, 1);
+};
+function onNextMonth()
+{
+	month++;
+	if( 11 < month )
+	{
+		month = 0;
+		year++;
+	}
+	cal(year, month, 1);
+};
+function load()
+{
+	var today = new Date();
+
+	year = today.getFullYear();
+	month = today.getMonth();
+	day = today.getDate();
+	
+	var weekList = [ "日", "月", "火", "水", "木", "金", "土" ];
+	
+	var msg = "今日は、" + year + "年" + (month + 1) + "月" + day + "日（" + weekList[today.getDay()] + "）です。";
+	document.getElementById( "message" ).innerHTML = msg;
+
+	cal(year, month, day);
+
+};
+window.onload = load;
+</script>
+    </head>
+    <body>
+<p id="message"></p>
+<p id="calDate"></p>
+<table id="calender" border="1">
+</table>
+<div>
+<button id="lastMonth" type="button" onclick="onLastMonth();">先月</button>
+<button id="nextMonth" type="button" onclick="onNextMonth();">来月</button>
+</div>
+    </body>
+</html>
